@@ -8,10 +8,10 @@ import java.time.LocalTime;
 
 public class PeriodCondition implements DiscountCondition {
     private DayOfWeek dayOfWeek;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
-    public PeriodCondition(DayOfWeek dayOfWeek, LocalDateTime startTime, LocalDateTime endTime) {
+    public PeriodCondition(DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
         this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -19,8 +19,8 @@ public class PeriodCondition implements DiscountCondition {
 
     public boolean isSatisfiedBy(Screening screening) {
         return screening.getStartTime().getDayOfWeek().equals(dayOfWeek) &&
-                parseLocalTime(startTime).isBefore(screening.getStartTime().toLocalTime()) &&
-                parseLocalTime(endTime).isAfter(screening.getStartTime().toLocalTime());
+                startTime.compareTo(screening.getStartTime().toLocalTime()) <= 0 &&
+                endTime.compareTo(screening.getStartTime().toLocalTime()) >= 0;
     }
 
     private LocalTime parseLocalTime(LocalDateTime time) {

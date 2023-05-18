@@ -11,5 +11,6 @@ public class Reservation {
         this.screening = screening;
         this.fee = fee;
         this.audienceCount = audienceCount;
+        customer.addReservation(this);
     }
 }
