@@ -2,16 +2,21 @@ package object.refactoring;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
-public class Movie {
+public abstract class Movie {
     private String title;
     private Duration duration;
     private Money fee;
     private List<DiscountCondition> discountConditions;
-    private MovieType movieType;
-    private Money discountAmount;
-    private double discountPercent;
+
+    public Movie(String title, Duration duration, Money fee, DiscountCondition... discountConditions) {
+        this.title = title;
+        this.duration = duration;
+        this.fee = fee;
+        this.discountConditions = Arrays.asList(discountConditions);
+    }
 
     private boolean isDiscountable(Screening screening) {
         return discountConditions.stream().anyMatch(condition -> condition.isSatisfiedBy(screening));
@@ -24,30 +29,7 @@ public class Movie {
         return fee;
     }
 
-    private Money calculateDiscountAmount() {
-        switch(movieType) {
-            case AMOUNT_DISCOUNT:
-                return calculateAmountDiscountAmount();
-            case PERCENT_DISCOUNT:
-                return calculatePercentDiscountAmount();
-            case NONE_DISCOUNT:
-                return calculateNoneDiscountAmount();
-        }
-
-        throw new IllegalStateException();
-    }
-
-    private Money calculateAmountDiscountAmount() {
-        return discountAmount;
-    }
-
-    private Money calculatePercentDiscountAmount() {
-        return fee.times(discountPercent);
-    }
-
-    private Money calculateNoneDiscountAmount() {
-        return Money.ZERO;
-    }
+    abstract protected Money calculateDiscountAmount();
 
     public String getTitle() {
         return title;
@@ -65,7 +47,7 @@ public class Movie {
         this.duration = duration;
     }
 
-    public Money getFee() {
+    protected Money getFee() {
         return fee;
     }
 
@@ -79,29 +61,5 @@ public class Movie {
 
     public void setDiscountConditions(List<DiscountCondition> discountConditions) {
         this.discountConditions = discountConditions;
-    }
-
-    public MovieType getMovieType() {
-        return movieType;
-    }
-
-    public void setMovieType(MovieType movieType) {
-        this.movieType = movieType;
-    }
-
-    public Money getDiscountAmount() {
-        return discountAmount;
-    }
-
-    public void setDiscountAmount(Money discountAmount) {
-        this.discountAmount = discountAmount;
-    }
-
-    public double getDiscountPercent() {
-        return discountPercent;
-    }
-
-    public void setDiscountPercent(double discountPercent) {
-        this.discountPercent = discountPercent;
     }
 }
